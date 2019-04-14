@@ -13,7 +13,7 @@ router.post('/', auth, async (req, res) => {
         await task.save();
         return res.send(task);
     } catch (error) {
-        return  res.status(400).send(error)
+        return res.status(400).send(error)
     }
 });
 
@@ -23,11 +23,27 @@ router.get('/', auth, (req, res) => {
         .catch(() => res.sendStatus(500));
 });
 
-
+router.put('/:id', auth, async (req, res) => {
+    try {
+        await Task.updateOne(
+            {
+                _id: req.params.id
+            },
+            {
+                title: req.body.title,
+                description: req.body.description,
+                status: req.body.status,
+            }
+        );
+        return res.sendStatus(200);
+    } catch (error) {
+        return res.status(400).send(error)
+    }
+});
 
 router.delete('/:id', auth, async (req, res) => {
     try {
-        await Task.findByIdAndDelete(req.params.id);
+        await Task.deleteOne({_id: req.params.id});
         return res.sendStatus(200);
     } catch (error) {
         return res.status(400).send(error);
