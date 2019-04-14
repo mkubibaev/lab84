@@ -10,14 +10,15 @@ const TaskSchema = new Schema({
     },
     title: {
         type: String,
-        required: true
+        required: true,
     },
     description: String,
     status: {
         type: String,
-        enum: ['new', 'in_progress', 'complete'],
+        enum: ["new", "in_progress", "complete"],
         required: true,
     }
+
 });
 
 const Task = mongoose.model('Task', TaskSchema);
