@@ -17,25 +17,24 @@ router.post('/', auth, async (req, res) => {
     }
 });
 
-router.get('/', auth, (req, res) => {
-    Task.find({user: req.user._id})
-        .then(tasks => res.send(tasks))
-        .catch(() => res.sendStatus(500));
+router.get('/', auth, async (req, res) => {
+    try {
+        const tasks = await Task.find({user: req.user._id});
+        return res.send(tasks);
+    } catch (error) {
+        return res.status(400).send(error);
+    }
 });
 
 router.put('/:id', auth, async (req, res) => {
     try {
-        await Task.updateOne(
-            {
-                _id: req.params.id
-            },
-            {
-                title: req.body.title,
-                description: req.body.description,
-                status: req.body.status,
-            }
-        );
-        return res.sendStatus(200);
+        const updateTask = await Task.findById(req.params.id);
+        updateTask.title = req.body.title;
+        updateTask.description = req.body.description;
+        updateTask.status = req.body.status;
+
+        await updateTask.save();
+        return res.send(updateTask);
     } catch (error) {
         return res.status(400).send(error)
     }
